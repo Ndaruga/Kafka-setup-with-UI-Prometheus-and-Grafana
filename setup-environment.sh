@@ -31,12 +31,13 @@ echo "$(docker --version) is running ✅"
 
 fi
 
-exit
+
 # load environment variables 
 source .env
 
 #Docker compose
 docker compose -f ./docker-compose.yaml up -d
+
 
 # Check if containers are up and running
 echo Checking container status ...
@@ -49,7 +50,7 @@ for container_name in $(docker ps --format {{.Names}}); do
     fi
 done
 
-echo Waiting for Kafka to be ready ... 🙇
+echo Waiting for Kafka cluster to be ready ... 🙇
 # docker exec kafka ../../usr/bin/cub kafka-ready -b kafka:9092 1 60
 
 # create topic, producer and consumer
