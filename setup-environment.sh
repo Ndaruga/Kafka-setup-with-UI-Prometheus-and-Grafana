@@ -57,5 +57,15 @@ docker exec kafka ../../usr/bin/kafka-topics --create --topic ${TOPIC_NAME} --pa
 docker exec kafka ../../usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
 docker exec kafka ../../usr/bin/kafka-console-producer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
 
-# Open browser to see kafka cluster UI
-open http://localhost:8080
+# Open default browser to see kafka cluster UI
+if [[ $OS == "linux" ]]; then
+        xdg-open http://localhost:8080
+    elif [[ $OS == "Darwin" ]]; then
+        open http://localhost:8080
+    elif [[ $OS == "windows" ]]; then
+        explorer "http://localhost:8080"
+    else
+        echo "Unsupported OS: Please Open the following Links."
+        echo http://localhost:8080
+        exit
+    fi
