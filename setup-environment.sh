@@ -1,5 +1,18 @@
 #/bin/bash
 
+
+# Check If docker is running
+if [ $? -eq 0 ]; then
+    echo "$({docker --version}) is running ✅"
+else
+    echo "Docker is not running ❌"
+    echo
+    # Restart Docker
+    echo "Attempting to restart Docker"
+    open -a Docker
+    while ! docker info > /dev/null 2>&1; do sleep 1; done
+    echo "$({docker --version}) is running ✅"
+fi
 # load environment variables 
 source .env
 
