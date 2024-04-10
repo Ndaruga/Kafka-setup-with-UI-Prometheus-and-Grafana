@@ -1,18 +1,37 @@
 #/bin/bash
 
+# Get The Host OS Name
+OS=$(uname)
 
 # Check If docker is running
-if [ $? -eq 0 ]; then
-    echo "$({docker --version}) is running ✅"
+which docker
+if [ $? -eq 1 ]; then
+    echo "$(docker --version) is running ✅"
 else
     echo "Docker is not running ❌"
     echo
+
     # Restart Docker
-    echo "Attempting to restart Docker"
-    open -a Docker
-    while ! docker info > /dev/null 2>&1; do sleep 1; done
-    echo "$({docker --version}) is running ✅"
+    echo "Attempting to start Docker..."
+
+    if [[ $OS == "linux" ]]; then
+        # Restart Docker on Linux
+        sudo service docker restart
+    elif [[ $OS == "Darwin" ]]; then
+        open -a Docker
+        while ! docker info > /dev/null 2>&1; do sleep 1; done
+    elif [[ $OS == "windows" ]]; then
+        # Restart Docker on Windows (using powershell)
+        powershell -Command "Stop-Service docker; Start-Service docker"
+    else
+        echo "Unsupported OS: $OS. Docker restart failed ❌."
+        exit
+    fi
+echo "$(docker --version) is running ✅"
+
 fi
+
+exit
 # load environment variables 
 source .env
 
@@ -24,6 +43,7 @@ echo Checking container status ...
 for container_name in $(docker ps --format {{.Names}}); do
     if [[ $(docker inspect -f '{{.State.Running}}' $container_name) = "false" ]]; then
         echo $container_name container is not running ❌.
+        exit
     else
         echo $container_name container is running ✅
     fi
@@ -37,4 +57,5 @@ docker exec kafka ../../usr/bin/kafka-topics --create --topic ${TOPIC_NAME} --pa
 docker exec kafka ../../usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
 docker exec kafka ../../usr/bin/kafka-console-producer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
 
+# Open browser to see kafka cluster UI
 open http://localhost:8080
