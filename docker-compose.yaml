@@ -34,28 +34,6 @@ services:
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
 
-  # kafka-init-topics:
-  #   image: confluentinc/cp-kafka:latest
-  #   volumes:
-  #     - ./data/message.json:/data/message.json
-  #     - ./data/customer.json:/data/customer.json
-
-  #   depends_on:
-  #     - kafka
-  #     - zookeeper
-  #   environment:
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092 PLAINTEXT_HOST://localhost:9092
-  #   command: "bash -c 'echo Waiting for Kafka to be ready 🙇 ... && \
-  #              cub kafka-ready -b kafka:9092 1 60 && \
-  #              kafka-topics --create --topic customers --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 && \
-  #              echo Topic Customers created Successfully ✅ \
-  #              kafka-topics --create --topic messages --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 && \
-  #              echo Topic messages created Successfully ✅ \
-  #              kafka-console-producer --bootstrap-server kafka:9092 --topic customers < /data/customer.json && \    
-  #              kafka-console-producer --bootstrap-server kafka:9092 --topic messages < /data/message.json'"
-# docker exec kafka ../../usr/bin/kafka-topics --create --topic messages --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 && echo Topic messages created Successfully ✅
-
   kafka-ui:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
