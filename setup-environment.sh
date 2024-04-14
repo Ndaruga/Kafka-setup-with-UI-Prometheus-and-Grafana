@@ -61,12 +61,16 @@ docker exec kafka ../../usr/bin/kafka-console-producer --bootstrap-server kafka:
 # Open default browser to see kafka cluster UI
 if [[ $OS == "linux" ]]; then
         xdg-open http://localhost:8080
+        xdg-open http://localhost:9090
     elif [[ $OS == "Darwin" ]]; then
         open http://localhost:8080
+        open http://localhost:9090
     elif [[ $OS == "windows" ]]; then
         explorer "http://localhost:8080"
+        explorer "http://localhost:9090"
     else
         echo "Unsupported OS: Please Open the following Links."
-        echo http://localhost:8080
+        echo Open Kafka UI on http://localhost:8080
+        echo Open Prometheus UI on http://localhost:9090
         exit
     fi
