@@ -1,3 +1,4 @@
+
 #/bin/bash
 
 # Get The Host OS Name
@@ -33,10 +34,24 @@ fi
 
 
 # load environment variables 
-source .env
+ENV_VARS=".env"
+if [ -e "${ENV_VARS}" ]; then
+    source ${ENV_VARS}
+else 
+    echo "${ENV_VARS} file does not exist ❌"
+    exit
+fi 
+
 
 #Docker compose
-docker compose -f ./docker-compose.yaml up -d
+COMPOSE_FILE="docker-compose.yml"
+
+if [ -e "${COMPOSE_FILE}" ]; then
+    docker compose -f ./${COMPOSE_FILE} up -d
+else
+    echo "${COMPOSE_FILE} does not exist ❌"
+    exit
+fi
 
 
 # Check if containers are up and running
@@ -55,8 +70,10 @@ echo Waiting for Kafka cluster to be ready ... 🙇
 
 # create topic, producer and consumer
 docker exec kafka ../../usr/bin/kafka-topics --create --topic ${TOPIC_NAME} --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092
-docker exec kafka ../../usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
-docker exec kafka ../../usr/bin/kafka-console-producer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
+# docker exec kafka ../../usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
+# docker exec kafka ../../usr/bin/kafka-console-producer --bootstrap-server kafka:9092 --topic ${TOPIC_NAME} 
+echo Kafka is ready ✅
+
 
 # Open default browser to see kafka cluster UI
 if [[ $OS == "linux" ]]; then
